@@ -1,6 +1,7 @@
 package shanepark.foodbox.image;
 
 import net.sourceforge.tess4j.TesseractException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +16,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 class ImageParserTest {
-    private final String dataPath = "/usr/share/tesseract-ocr/5/tessdata";
+    private final String TESSDATA_PATH_LINUX = "/usr/share/tesseract-ocr/5/tessdata";
+    private final String TESSDATA_PATH_MAC = "/opt/homebrew/share/tessdata";
     private final Logger logger = LoggerFactory.getLogger(ImageParserTest.class);
 
-    ImageParser parser = new ImageParser(dataPath);
+    ImageParser parser;
+
+    @BeforeEach
+    void setUp() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String dataPath;
+        if (os.contains("mac")) {
+            dataPath = TESSDATA_PATH_MAC;
+        } else {
+            dataPath = TESSDATA_PATH_LINUX;
+        }
+        parser = new ImageParser(dataPath);
+    }
 
     @Test
     void parse() throws IOException, TesseractException {

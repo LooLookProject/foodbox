@@ -38,10 +38,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-sourceSets {
-    test {
-        resources {
-            srcDir 'src/test/resources'
-        }
-    }
+// for apple silicon
+test {
+    systemProperty "jna.library.path", "/opt/homebrew/opt/tesseract/lib"
 }

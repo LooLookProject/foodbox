@@ -3,6 +3,7 @@ package shanepark.foodbox.api.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shanepark.foodbox.api.domain.MenuResponse;
+import shanepark.foodbox.api.exception.MenuNotUploadedException;
 import shanepark.foodbox.api.repository.MenuRepository;
 import shanepark.foodbox.crawl.CrawlConfig;
 import shanepark.foodbox.crawl.MenuCrawler;
@@ -25,19 +26,16 @@ public class MenuService {
     public MenuResponse getTodayMenu() {
         LocalDate today = LocalDate.now();
         return menuRepository.findByDate(today)
-                .orElseGet(() -> crawlAndGet(today));
+                .orElseGet(() -> {
+                    crawl();
+                    return menuRepository.findByDate(today).orElseThrow(MenuNotUploadedException::new);
+                });
     }
 
     public List<MenuResponse> findAll() {
         // ensure today's menu is always up-to-date
         getTodayMenu();
-
         return menuRepository.findAll();
-    }
-
-    private MenuResponse crawlAndGet(LocalDate date) {
-        crawl();
-        return menuRepository.findByDate(date).orElseThrow();
     }
 
     private void crawl() {

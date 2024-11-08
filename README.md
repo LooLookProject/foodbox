@@ -15,6 +15,14 @@ features include:
 
 The goal is to ensure everyone has quick and easy access to the lunch menu, without needing to search for it manually.
 
+## Deployment
+```bash
+git clone https://github.com/ArgonetDevStudio/foodbox.git
+cd foodbox
+./gradlew clean build
+docker compose up -d
+```
+
 ## Development Environment Setup
 
 ### 1. Install Tesseract

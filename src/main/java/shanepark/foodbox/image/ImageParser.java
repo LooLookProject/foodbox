@@ -7,16 +7,19 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.opencv.global.opencv_imgproc;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Size;
+import org.springframework.stereotype.Component;
+import shanepark.foodbox.api.exception.ImageParseException;
 import shanepark.foodbox.image.domain.ParseRegion;
 import shanepark.foodbox.image.domain.ParsedMenu;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class ImageParser {
 
     private final Tesseract tesseract;
@@ -26,25 +29,43 @@ public class ImageParser {
     final int DAY_PER_ROW = 5;
     final int singleWidth = 183;
 
-    public ImageParser(String dataPath) {
+    public ImageParser() {
         this.tesseract = new Tesseract();
-        tesseract.setDatapath(dataPath);
+        this.tesseract.setDatapath(getDataPathFromOs());
         this.tesseract.setLanguage("kor");
         this.tesseract.setPageSegMode(6);
     }
 
-    public List<ParsedMenu> parse(File file) throws TesseractException, IOException {
+    private String getDataPathFromOs() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("mac")) {
+            return "/opt/homebrew/share/tessdata";
+        }
+        if (os.contains("win")) {
+            return "C:\\Program Files\\Tesseract-OCR\\tessdata";
+        }
+        if (os.contains("linux")) {
+            return "/usr/share/tesseract-ocr/5/tessdata";
+        }
+        throw new RuntimeException("Unsupported OS");
+    }
+
+    public List<ParsedMenu> parse(InputStream inputStream) {
         final int marginLeft = 129;
         final int marginTop = 46;
         final int gapBig = 30;
 
-        BufferedImage bufferedImage = ImageIO.read(file);
+        try {
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
 
-        List<ParsedMenu> days = new ArrayList<>();
-        days.addAll(readFiveDays(bufferedImage, tesseract, marginLeft, marginTop));
-        days.addAll(readFiveDays(bufferedImage, tesseract, marginLeft, marginTop + HEADER_HEIGHT + GAP_SMALL + SINGLE_HEIGHT + gapBig));
+            List<ParsedMenu> days = new ArrayList<>();
+            days.addAll(readFiveDays(bufferedImage, tesseract, marginLeft, marginTop));
+            days.addAll(readFiveDays(bufferedImage, tesseract, marginLeft, marginTop + HEADER_HEIGHT + GAP_SMALL + SINGLE_HEIGHT + gapBig));
 
-        return days;
+            return days;
+        } catch (IOException | TesseractException e) {
+            throw new ImageParseException(e);
+        }
     }
 
     private BufferedImage preprocessImage(BufferedImage image) {

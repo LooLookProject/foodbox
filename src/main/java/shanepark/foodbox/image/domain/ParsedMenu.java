@@ -1,7 +1,9 @@
 package shanepark.foodbox.image.domain;
 
 import lombok.Getter;
+import shanepark.foodbox.api.domain.MenuResponse;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,18 @@ public class ParsedMenu {
 
     @Override
     public String toString() {
-        return String.format("<%s>\n%s\n", date, menus.toString());
+        return String.format("<%s>\n%s\n", date, menus);
+    }
+
+    public MenuResponse toMenuResponse() {
+        LocalDate today = LocalDate.now();
+        String[] split = date.split("/");
+        int month = Integer.parseInt(split[0]);
+        int day = Integer.parseInt(split[1].substring(0, split[1].indexOf("(")));
+        LocalDate localDate = LocalDate.of(today.getYear(), month, day);
+        if (localDate.isBefore(today.minusMonths(6))) {
+            localDate = localDate.plusYears(1);
+        }
+        return new MenuResponse(localDate, menus);
     }
 }

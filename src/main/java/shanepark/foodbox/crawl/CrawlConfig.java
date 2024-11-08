@@ -1,11 +1,16 @@
 package shanepark.foodbox.crawl;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "crawl")
-public record CrawlConfig(
-        String crawlUrl,
-        String cssSelector,
-        int imageIndex
-) {
+@RequiredArgsConstructor
+@Getter
+@ToString
+public class CrawlConfig {
+    private final String crawlUrl;
+    private final String cssSelector;
+    private final int imageIndex;
 }

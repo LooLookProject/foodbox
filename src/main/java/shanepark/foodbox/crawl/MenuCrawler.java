@@ -15,11 +15,11 @@ public class MenuCrawler {
 
     public InputStream getImage(CrawlConfig crawlConfig) {
         try {
-            String url = crawlConfig.crawlUrl();
-            int index = crawlConfig.imageIndex();
+            String url = crawlConfig.getCrawlUrl();
+            int index = crawlConfig.getImageIndex();
 
             Document document = Jsoup.connect(url).get();
-            Elements images = document.select(crawlConfig.cssSelector());
+            Elements images = document.select(crawlConfig.getCssSelector());
             if (images.size() <= index) {
                 throw new IllegalArgumentException("index is out of range");
             }

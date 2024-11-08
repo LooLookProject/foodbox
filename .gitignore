@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## Ignore other profiles
+src/main/resources/application-**.yml

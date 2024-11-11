@@ -38,3 +38,4 @@ out/
 
 ## Ignore other profiles
 src/main/resources/application-**.yml
+.env

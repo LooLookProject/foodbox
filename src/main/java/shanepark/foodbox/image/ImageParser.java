@@ -23,11 +23,16 @@ import java.util.List;
 public class ImageParser {
 
     private final Tesseract tesseract;
-    private final int SINGLE_HEIGHT = 346;
-    private final int HEADER_HEIGHT = 46;
-    private final int GAP_SMALL = 4;
+    private final int SINGLE_HEIGHT = 231;
+    private final int HEADER_HEIGHT = 31;
+    private final int GAP_SMALL = 3;
+    final int marginLeft = 79;
+    final int marginTop = 22;
+    final int gapBig = 21;
+    final int singleWidth = 122;
+    // TODO: 이미지 포맷이 자주 변한다면 GAP, Margin, Height 등을 스스로 계산할 수 있도록 해야함. 이미지 사이즈가 (지난주)1100px -> (이번주)720px 이 되었음.
+
     final int DAY_PER_ROW = 5;
-    final int singleWidth = 183;
 
     public ImageParser() {
         this.tesseract = new Tesseract();
@@ -51,10 +56,6 @@ public class ImageParser {
     }
 
     public List<ParsedMenu> parse(InputStream inputStream) {
-        final int marginLeft = 129;
-        final int marginTop = 46;
-        final int gapBig = 30;
-
         try {
             BufferedImage bufferedImage = ImageIO.read(inputStream);
 
@@ -80,8 +81,6 @@ public class ImageParser {
     }
 
     private List<ParsedMenu> readFiveDays(BufferedImage image, Tesseract tesseract, int x, int y) throws TesseractException {
-
-
         List<ParsedMenu> days = new ArrayList<>();
         ParseRegion region = new ParseRegion(x, y, singleWidth, HEADER_HEIGHT);
         for (int i = 0; i < DAY_PER_ROW; i++) {

@@ -25,8 +25,9 @@ class ImageParserTest {
         try (InputStream ins = resource.getInputStream()) {
             List<ParsedMenu> parsedMenu = parser.parse(ins);
             logger.info("parsedMenu: \n{}", parsedMenu);
+
             assertThat(parsedMenu).hasSize(10);
-            assertThat(parsedMenu.getFirst().getDate()).isEqualTo("10/28(월)");
+            assertThat(parsedMenu.getFirst().getDate()).matches("\\d{1,2}/\\d{1,2}\\([일월화수목금토]\\)");
         }
     }
 

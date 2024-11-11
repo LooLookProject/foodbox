@@ -8,3 +8,4 @@ services:
     environment:
       - SLACK_TOKEN=${SLACK_TOKEN}
       - SLACK_CHANNEL=${SLACK_CHANNEL}
+      - TZ=Asia/Seoul

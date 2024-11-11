@@ -1,7 +1,9 @@
 package shanepark.foodbox.crawl;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,7 +20,7 @@ class MenuCrawlerTest {
         String cssSelector = ".gallery_img img";
 
         // When
-        InputStream inputStream = menuCrawler.getImage(new CrawlConfig(url, cssSelector, 0));
+        InputStream inputStream = menuCrawler.getImage(new CrawlConfig(url, cssSelector, 1));
 
         // Then
         assertThat(inputStream).isNotNull();

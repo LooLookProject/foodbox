@@ -5,3 +5,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+    environment:
+      - SLACK_TOKEN=${SLACK_TOKEN}
+      - SLACK_CHANNEL=${SLACK_CHANNEL}
+      - TZ=Asia/Seoul

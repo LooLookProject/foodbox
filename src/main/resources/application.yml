@@ -8,8 +8,8 @@ crawl:
   image-index: 1
 
 slack:
-  slack-token: "SLACK_TOKEN_HERE"
-  slack-channel: "#SLACK_CHANNEL_NAME_HERE"
+  slack-token: ${SLACK_TOKEN:"YOUR_SLACK_TOKEN_HERE"}
+  slack-channel: ${SLACK_CHANNEL:"YOUR_SLACK_CHANNEL_HERE"}
   user-name: "점심봇"
   slack-url: "https://hooks.slack.com/services"
 

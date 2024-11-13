@@ -16,6 +16,25 @@ features include:
 The goal is to ensure everyone has quick and easy access to the lunch menu, without needing to search for it manually.
 
 ## Deployment
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+- Java 21+
+- tesseract-ocr
+
+### Configuration
+
+after git clone, make `.env` file in the same directory as `docker-compose.yml` and fill in the following values:
+
+```properties
+SLACK_TOKEN=your_slack_token
+SLACK_CHANNEL=#your_slack_channel
+```
+
+### Run
+
 ```bash
 git clone https://github.com/ArgonetDevStudio/foodbox.git
 cd foodbox

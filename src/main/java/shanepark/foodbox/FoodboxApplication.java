@@ -10,6 +10,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import shanepark.foodbox.crawl.CrawlConfig;
 import shanepark.foodbox.slack.SlackConfig;
 
+import java.time.LocalDateTime;
+
 @SpringBootApplication
 @ConfigurationPropertiesScan
 @RequiredArgsConstructor
@@ -21,10 +23,12 @@ public class FoodboxApplication {
     private final SlackConfig slackConfig;
 
     @PostConstruct
-    public void init() {
+    public void showAndSetupProperties() {
+        log.info("=========================================");
+
         String arch = System.getProperty("os.arch");
         String os = System.getProperty("os.name");
-        log.info("os: {}, arch: {}", os, arch);
+        log.info("OS: {}, arch: {}", os, arch);
 
         if (os.contains("Mac") && arch.contains("aarch64")) {
             System.setProperty("jna.library.path", "/opt/homebrew/opt/tesseract/lib");
@@ -32,6 +36,10 @@ public class FoodboxApplication {
 
         log.info("CrawlConfig: {}", crawlConfig);
         log.info("SlackConfig: {}", slackConfig);
+        log.info("Time zone: {}", System.getProperty("user.timezone"));
+        log.info("Current time: {}", LocalDateTime.now());
+
+        log.info("=========================================");
     }
 
     public static void main(String[] args) {

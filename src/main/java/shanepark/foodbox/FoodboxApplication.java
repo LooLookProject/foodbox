@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import shanepark.foodbox.api.service.MenuService;
 import shanepark.foodbox.crawl.CrawlConfig;
 import shanepark.foodbox.slack.SlackConfig;
 
@@ -23,7 +24,7 @@ public class FoodboxApplication {
     private final SlackConfig slackConfig;
 
     @PostConstruct
-    public void showAndSetupProperties() {
+    public void init() {
         log.info("=========================================");
 
         String arch = System.getProperty("os.arch");

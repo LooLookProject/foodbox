@@ -9,6 +9,7 @@ import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.springframework.stereotype.Component;
 import shanepark.foodbox.api.exception.ImageParseException;
+import shanepark.foodbox.image.domain.ImageMarginData;
 import shanepark.foodbox.image.domain.ParseRegion;
 import shanepark.foodbox.image.domain.ParsedMenu;
 
@@ -23,18 +24,12 @@ import java.util.List;
 public class ImageParser {
 
     private final Tesseract tesseract;
-    private final int SINGLE_HEIGHT = 346;
-    private final int HEADER_HEIGHT = 46;
-    private final int GAP_SMALL = 4;
-    final int marginLeft = 120;
-    final int marginTop = 36;
-    final int gapBig = 37;
-    final int singleWidth = 187;
-    // TODO: 이미지 포맷이 자주 변한다면 GAP, Margin, Height 등을 스스로 계산할 수 있도록 해야함. 이미지 사이즈가 (지난주)1100px -> (이번주)720px 이 되었음.
-
+    private final ImageMarginCalculator imageMarginCalculator;
     final int DAY_PER_ROW = 5;
 
-    public ImageParser() {
+    public ImageParser(ImageMarginCalculator imageMarginCalculator) {
+        this.imageMarginCalculator = imageMarginCalculator;
+
         this.tesseract = new Tesseract();
         this.tesseract.setDatapath(getDataPathFromOs());
         this.tesseract.setLanguage("kor");
@@ -58,10 +53,14 @@ public class ImageParser {
     public List<ParsedMenu> parse(InputStream inputStream) {
         try {
             BufferedImage bufferedImage = ImageIO.read(inputStream);
+            ImageMarginData marginData = imageMarginCalculator.calcMargin(bufferedImage);
 
-            List<ParsedMenu> days = new ArrayList<>();
-            days.addAll(readFiveDays(bufferedImage, tesseract, marginLeft, marginTop));
-            days.addAll(readFiveDays(bufferedImage, tesseract, marginLeft, marginTop + HEADER_HEIGHT + GAP_SMALL + SINGLE_HEIGHT + gapBig));
+            int x = marginData.marginLeft();
+            int y = marginData.marginTop();
+            List<ParsedMenu> days = new ArrayList<>(readFiveDays(bufferedImage, tesseract, x, y, marginData));
+
+            y = marginData.marginTop() + marginData.headerHeight() + marginData.gapSmall() + marginData.singleHeight() + marginData.gapBig();
+            days.addAll(readFiveDays(bufferedImage, tesseract, x, y, marginData));
 
             return days;
         } catch (IOException | TesseractException e) {
@@ -80,20 +79,20 @@ public class ImageParser {
         }
     }
 
-    private List<ParsedMenu> readFiveDays(BufferedImage image, Tesseract tesseract, int x, int y) throws TesseractException {
+    private List<ParsedMenu> readFiveDays(BufferedImage image, Tesseract tesseract, int x, int y, ImageMarginData marginData) throws TesseractException {
         List<ParsedMenu> days = new ArrayList<>();
-        ParseRegion region = new ParseRegion(x, y, singleWidth, HEADER_HEIGHT);
+        ParseRegion region = new ParseRegion(x, y, marginData.singleWidth(), marginData.headerHeight());
         for (int i = 0; i < DAY_PER_ROW; i++) {
             String date = readImagePartHeader(image, tesseract, region);
             days.add(new ParsedMenu(date));
-            region.addX(singleWidth + GAP_SMALL);
+            region.addX(marginData.singleWidth() + marginData.gapSmall());
         }
 
-        region = new ParseRegion(x, y + HEADER_HEIGHT + GAP_SMALL, singleWidth, SINGLE_HEIGHT);
+        region = new ParseRegion(x, y + marginData.headerHeight() + marginData.gapSmall(), marginData.singleWidth(), marginData.singleHeight());
         for (int i = 0; i < DAY_PER_ROW; i++) {
             String menu = readImagePartMenu(image, tesseract, region);
             days.get(i).setMenu(menu);
-            region.addX(singleWidth + GAP_SMALL);
+            region.addX(marginData.singleWidth() + marginData.gapSmall());
         }
         return days;
     }

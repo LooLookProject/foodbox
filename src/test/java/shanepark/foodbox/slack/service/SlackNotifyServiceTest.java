@@ -29,7 +29,10 @@ class SlackNotifyServiceTest {
         SlackNotifyService slackNotifyService = new SlackNotifyService(menuService, slackMessageSender, slackConfig);
 
         // When
-        when(menuService.getTodayMenu()).thenReturn(new MenuResponse(LocalDate.of(2024, 11, 8), List.of("김치찌개", "된장찌개", "제육볶음")));
+        LocalDate now = LocalDate.now();
+        if (now.getDayOfWeek().getValue() <= 5) {
+            when(menuService.getTodayMenu()).thenReturn(new MenuResponse(LocalDate.of(2024, 11, 8), List.of("김치찌개", "된장찌개", "제육볶음")));
+        }
 
         // Then
         slackNotifyService.notifyTodayMenu();

@@ -7,7 +7,7 @@ import shanepark.foodbox.api.exception.MenuNotUploadedException;
 import shanepark.foodbox.api.repository.MenuRepository;
 import shanepark.foodbox.crawl.CrawlConfig;
 import shanepark.foodbox.crawl.MenuCrawler;
-import shanepark.foodbox.image.ImageParser;
+import shanepark.foodbox.image.service.ImageParser;
 import shanepark.foodbox.image.domain.ParsedMenu;
 
 import java.io.InputStream;

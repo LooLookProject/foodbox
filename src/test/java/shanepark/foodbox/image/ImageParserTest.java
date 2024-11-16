@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import shanepark.foodbox.image.domain.ParsedMenu;
+import shanepark.foodbox.image.service.ImageParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ class ImageParserTest {
     @Test
     @DisplayName("Parse image and return parsed menu")
     void parse() throws IOException {
-        ClassPathResource resource = new ClassPathResource("메뉴.png");
+        ClassPathResource resource = new ClassPathResource("menu-nov-11.png");
         try (InputStream ins = resource.getInputStream()) {
             List<ParsedMenu> parsedMenu = parser.parse(ins);
             logger.info("parsedMenu: \n{}", parsedMenu);

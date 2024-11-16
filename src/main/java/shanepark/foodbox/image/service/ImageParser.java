@@ -1,4 +1,4 @@
-package shanepark.foodbox.image;
+package shanepark.foodbox.image.service;
 
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;

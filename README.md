@@ -2,6 +2,14 @@
 
 ## Overview
 
+### Preview
+
+![preview](README.assets/preview.png)
+
+
+
+### Intro
+
 Foodbox is a tool designed to make it easy for employees to check the daily lunch menu. The lunch vendor posts the menu
 on their website as an image, and this project automates the process of sharing that information with everyone. The key
 features include:
@@ -11,7 +19,6 @@ features include:
 - **Data Structuring**: Analyzing and organizing the menu for each date into a structured format.
 - **Notification**: Sending the lunch menu via a Slack bot at the beginning of each workday, so everyone knows what's
   for lunch.
-- **Web Interface**: Users can also visit a simple web page to view the lunch menu for any given day.
 
 The goal is to ensure everyone has quick and easy access to the lunch menu, without needing to search for it manually.
 
@@ -87,7 +94,7 @@ your application to tell JNA where to find the Tesseract library:
    test {
        systemProperty "jna.library.path", "/opt/homebrew/opt/tesseract/lib"
    }
-
+   
    bootRun {
        systemProperty "jna.library.path", "/opt/homebrew/opt/tesseract/lib"
    }

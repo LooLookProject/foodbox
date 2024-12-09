@@ -46,4 +46,30 @@ class ImageParserTest {
         }
     }
 
+    @Test
+    @DisplayName("DEC 09 image parse test")
+    void parse3() throws IOException {
+        ClassPathResource resource = new ClassPathResource("menu-dec-09.png");
+        try (InputStream ins = resource.getInputStream()) {
+            List<ParsedMenu> parsedMenu = parser.parse(ins);
+            logger.info("parsedMenu: \n{}", parsedMenu);
+
+            assertThat(parsedMenu).hasSize(10);
+            assertThat(parsedMenu.getFirst().getDate()).matches("\\d{1,2}/\\d{1,2}\\([일월화수목금토]\\)");
+        }
+    }
+
+    @Test
+    @DisplayName("DEC 09 official website image parse test")
+    void parse4() throws IOException {
+        ClassPathResource resource = new ClassPathResource("menu-dec-09-official.png");
+        try (InputStream ins = resource.getInputStream()) {
+            List<ParsedMenu> parsedMenu = parser.parse(ins);
+            logger.info("parsedMenu: \n{}", parsedMenu);
+
+            assertThat(parsedMenu).hasSize(10);
+            assertThat(parsedMenu.getFirst().getDate()).matches("\\d{1,2}/\\d{1,2}\\([일월화수목금토]\\)");
+        }
+    }
+
 }

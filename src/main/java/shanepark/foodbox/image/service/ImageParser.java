@@ -83,7 +83,7 @@ public class ImageParser {
         List<ParsedMenu> days = new ArrayList<>();
         ParseRegion region = new ParseRegion(x, y, marginData.singleWidth(), marginData.headerHeight());
         for (int i = 0; i < DAY_PER_ROW; i++) {
-            String date = readImagePartHeader(image, tesseract, region);
+            String date = readImagePartHeader(image, tesseract, region).trim();
             days.add(new ParsedMenu(date));
             region.addX(marginData.singleWidth() + marginData.gapSmall());
         }

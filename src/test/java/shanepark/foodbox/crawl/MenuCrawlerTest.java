@@ -16,7 +16,7 @@ class MenuCrawlerTest {
     @Test
     void getImage() throws IOException {
         // Given
-        String url = "https://daejeonyuseong.modoo.at/?link=8dpmx8ms";
+        String url = "https://foodboxofficial.modoo.at/?link=e3pla1lv";
         String cssSelector = ".gallery_img img";
 
         // When

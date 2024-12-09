@@ -3,7 +3,7 @@ spring:
     name: foodbox
 
 crawl:
-  crawl-url: https://daejeonyuseong.modoo.at/?link=8dpmx8ms
+  crawl-url: https://foodboxofficial.modoo.at/?link=e3pla1lv
   css-selector: .gallery_img img
   image-index: 1
 

@@ -11,6 +11,8 @@ import shanepark.foodbox.crawl.CrawlConfig;
 import shanepark.foodbox.crawl.MenuCrawler;
 import shanepark.foodbox.image.domain.ParsedMenu;
 import shanepark.foodbox.image.service.ImageParser;
+import shanepark.foodbox.image.service.NaverClovaOCR;
+import shanepark.foodbox.ocr.OCRConfig;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -24,7 +26,9 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuCrawler menuCrawler;
     private final ImageParser imageParser;
+//    private final NaverClovaOCR imageParser;
     private final CrawlConfig crawlConfig;
+    private final OCRConfig ocrConfig;
 
     @PostConstruct
     public void init() {
@@ -54,6 +58,7 @@ public class MenuService {
         log.info("Start crawling menu");
         InputStream inputStream = menuCrawler.getImage(crawlConfig);
         List<ParsedMenu> parsed = imageParser.parse(inputStream);
+//        List<ParsedMenu> parsed = imageParser.parse(inputStream,ocrConfig);
         for (ParsedMenu menu : parsed) {
             MenuResponse resp = menu.toMenuResponse();
             menuRepository.save(resp);

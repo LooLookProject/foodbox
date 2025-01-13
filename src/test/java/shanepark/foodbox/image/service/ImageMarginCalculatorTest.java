@@ -16,10 +16,10 @@ class ImageMarginCalculatorTest {
     ImageMarginCalculator calculator = new ImageMarginCalculator();
 
     @Test
-    @DisplayName("Calculate margin data from image menu-nov-11.png")
+    @DisplayName("Calculate margin data from image menu-11112024.png")
     void calcMargin1() throws IOException {
         // Given
-        ClassPathResource nov11 = new ClassPathResource("menu-nov-11.png");
+        ClassPathResource nov11 = new ClassPathResource("menu/menu-11112024.png");
         BufferedImage image = ImageIO.read(nov11.getInputStream());
 
         // When
@@ -36,10 +36,10 @@ class ImageMarginCalculatorTest {
     }
 
     @Test
-    @DisplayName("Calculate margin data from image menu-oct-28.png")
+    @DisplayName("Calculate margin data from image menu-10282024.png")
     void calcMargin2() throws IOException {
         // Given
-        ClassPathResource nov11 = new ClassPathResource("menu-oct-28.png");
+        ClassPathResource nov11 = new ClassPathResource("menu/menu-10282024.png");
         BufferedImage image = ImageIO.read(nov11.getInputStream());
 
         // When

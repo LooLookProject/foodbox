@@ -11,6 +11,7 @@ import shanepark.foodbox.crawl.CrawlConfig;
 import shanepark.foodbox.crawl.MenuCrawler;
 import shanepark.foodbox.image.domain.ParsedMenu;
 import shanepark.foodbox.image.service.ImageParser;
+import shanepark.foodbox.image.service.ImageParserTesseract;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuCrawler menuCrawler;
-    private final ImageParser imageParser;
+    private final ImageParser imageParserTesseract;
     private final CrawlConfig crawlConfig;
 
     @PostConstruct
@@ -53,7 +54,7 @@ public class MenuService {
         long start = System.currentTimeMillis();
         log.info("Start crawling menu");
         InputStream inputStream = menuCrawler.getImage(crawlConfig);
-        List<ParsedMenu> parsed = imageParser.parse(inputStream);
+        List<ParsedMenu> parsed = imageParserTesseract.parse(inputStream);
         for (ParsedMenu menu : parsed) {
             MenuResponse resp = menu.toMenuResponse();
             menuRepository.save(resp);

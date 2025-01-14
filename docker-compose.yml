@@ -6,6 +6,8 @@ services:
     ports:
       - "80:80"
     environment:
+      - TZ=Asia/Seoul
       - SLACK_TOKEN=${SLACK_TOKEN}
       - SLACK_CHANNEL=${SLACK_CHANNEL}
-      - TZ=Asia/Seoul
+      - CLOVA_URL=${CLOVA_URL}
+      - CLOVA_SECRET_KEY=${CLOVA_SECRET_KEY}

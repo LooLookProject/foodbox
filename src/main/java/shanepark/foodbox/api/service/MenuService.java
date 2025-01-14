@@ -74,7 +74,6 @@ public class MenuService {
             MenuResponse resp = menu.toMenuResponse();
             menuRepository.save(resp);
         }
-
         log.info("Crawling done. total time taken: {} ms  , : {}", System.currentTimeMillis() - start, parsed);
     }
 

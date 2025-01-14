@@ -1,5 +1,7 @@
 package shanepark.foodbox.crawl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -7,13 +9,15 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import shanepark.foodbox.api.exception.ImageCrawlException;
 
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 @Component
+@Slf4j
 public class MenuCrawler {
 
-    public InputStream getImage(CrawlConfig crawlConfig) {
+    public File getImage(CrawlConfig crawlConfig) {
         try {
             String url = crawlConfig.getCrawlUrl();
             int index = crawlConfig.getImageIndex();
@@ -26,9 +30,16 @@ public class MenuCrawler {
             Element image = images.get(index);
             String imageSrc = getImageSrc(url, image);
 
-            return Jsoup.connect(imageSrc)
+            log.info("imageSrc: {}", imageSrc);
+
+            try (BufferedInputStream bufferedInputStream = Jsoup.connect(imageSrc)
                     .ignoreContentType(true)
-                    .execute().bodyStream();
+                    .execute().bodyStream();) {
+                File tempFile = File.createTempFile("temp", ".png");
+                FileUtils.copyInputStreamToFile(bufferedInputStream, tempFile);
+                tempFile.deleteOnExit();
+                return tempFile;
+            }
         } catch (IOException e) {
             throw new ImageCrawlException(e);
         }

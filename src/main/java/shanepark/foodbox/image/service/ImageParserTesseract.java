@@ -9,12 +9,13 @@ import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Size;
 import org.springframework.stereotype.Component;
 import shanepark.foodbox.api.exception.ImageParseException;
-import shanepark.foodbox.image.domain.ImageMarginData;
+import shanepark.foodbox.image.domain.DayRegion;
 import shanepark.foodbox.image.domain.ParseRegion;
 import shanepark.foodbox.image.domain.ParsedMenu;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -51,18 +52,20 @@ public class ImageParserTesseract implements ImageParser {
     }
 
     @Override
-    public List<ParsedMenu> parse(InputStream inputStream) {
+    public List<ParsedMenu> parse(File file) {
         try {
-            BufferedImage bufferedImage = ImageIO.read(inputStream);
-            ImageMarginData marginData = imageMarginCalculator.calcMargin(bufferedImage);
+            BufferedImage bufferedImage = ImageIO.read(file);
+            List<DayRegion> regions = imageMarginCalculator.calcParseRegions(bufferedImage);
 
-            int x = marginData.marginLeft();
-            int y = marginData.marginTop();
-            List<ParsedMenu> days = new ArrayList<>(readFiveDays(bufferedImage, tesseract, x, y, marginData));
+            List<ParsedMenu> days = new ArrayList<>();
+            for (DayRegion region : regions) {
+                String date = readImagePartHeader(bufferedImage, tesseract, region.date()).trim();
+                String menu = readImagePartMenu(bufferedImage, tesseract, region.menu());
 
-            y = marginData.marginTop() + marginData.headerHeight() + marginData.gapSmall() + marginData.singleHeight() + marginData.gapBig();
-            days.addAll(readFiveDays(bufferedImage, tesseract, x, y, marginData));
-
+                ParsedMenu parsedMenu = new ParsedMenu(date);
+                parsedMenu.setMenu(menu);
+                days.add(parsedMenu);
+            }
             return days;
         } catch (IOException | TesseractException e) {
             throw new ImageParseException(e);
@@ -80,24 +83,6 @@ public class ImageParserTesseract implements ImageParser {
         }
     }
 
-    private List<ParsedMenu> readFiveDays(BufferedImage image, Tesseract tesseract, int x, int y, ImageMarginData marginData) throws TesseractException {
-        List<ParsedMenu> days = new ArrayList<>();
-        ParseRegion region = new ParseRegion(x, y, marginData.singleWidth(), marginData.headerHeight());
-        for (int i = 0; i < DAY_PER_ROW; i++) {
-            String date = readImagePartHeader(image, tesseract, region).trim();
-            days.add(new ParsedMenu(date));
-            region.addX(marginData.singleWidth() + marginData.gapSmall());
-        }
-
-        region = new ParseRegion(x, y + marginData.headerHeight() + marginData.gapSmall(), marginData.singleWidth(), marginData.singleHeight());
-        for (int i = 0; i < DAY_PER_ROW; i++) {
-            String menu = readImagePartMenu(image, tesseract, region);
-            days.get(i).setMenu(menu);
-            region.addX(marginData.singleWidth() + marginData.gapSmall());
-        }
-        return days;
-    }
-
     private String readImagePartMenu(BufferedImage image, Tesseract tesseract, ParseRegion region) throws TesseractException {
         tesseract.setVariable("tessedit_char_whitelist", "");
         tesseract.setVariable("tessedit_char_blacklist", "0123456789");
@@ -111,7 +96,7 @@ public class ImageParserTesseract implements ImageParser {
     }
 
     private String readImagePart(BufferedImage image, Tesseract tesseract, ParseRegion region) throws TesseractException {
-        BufferedImage subImage = image.getSubimage(region.getX(), region.getY(), region.getWidth(), region.getHeight());
+        BufferedImage subImage = image.getSubimage(region.x(), region.y(), region.width(), region.height());
         subImage = preprocessImage(subImage);
 
         return tesseract.doOCR(subImage)

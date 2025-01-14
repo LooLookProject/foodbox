@@ -3,11 +3,12 @@ package shanepark.foodbox.image.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import shanepark.foodbox.image.domain.ImageMarginData;
+import shanepark.foodbox.image.domain.DayRegion;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,43 +17,22 @@ class ImageMarginCalculatorTest {
     ImageMarginCalculator calculator = new ImageMarginCalculator();
 
     @Test
-    @DisplayName("Calculate margin data from image menu-11112024.png")
-    void calcMargin1() throws IOException {
-        // Given
-        ClassPathResource nov11 = new ClassPathResource("menu/menu-11112024.png");
-        BufferedImage image = ImageIO.read(nov11.getInputStream());
-
-        // When
-        ImageMarginData data = calculator.calcMargin(image);
-
-        // Then
-        assertThat(data.singleHeight()).isEqualTo(351);
-        assertThat(data.headerHeight()).isEqualTo(47);
-        assertThat(data.gapSmall()).isEqualTo(3);
-        assertThat(data.marginLeft()).isEqualTo(118);
-        assertThat(data.marginTop()).isEqualTo(34);
-        assertThat(data.gapBig()).isEqualTo(31);
-        assertThat(data.singleWidth()).isEqualTo(188);
-    }
-
-    @Test
-    @DisplayName("Calculate margin data from image menu-10282024.png")
-    void calcMargin2() throws IOException {
+    @DisplayName("calc parseRegion return 10 regions")
+    void calcParseRegions() throws IOException {
         // Given
         ClassPathResource nov11 = new ClassPathResource("menu/menu-10282024.png");
         BufferedImage image = ImageIO.read(nov11.getInputStream());
 
         // When
-        ImageMarginData data = calculator.calcMargin(image);
+        List<DayRegion> dayRegions = calculator.calcParseRegions(image);
 
         // Then
-        assertThat(data.singleHeight()).isEqualTo(344);
-        assertThat(data.headerHeight()).isEqualTo(47);
-        assertThat(data.gapSmall()).isEqualTo(2);
-        assertThat(data.marginLeft()).isEqualTo(128);
-        assertThat(data.marginTop()).isEqualTo(46);
-        assertThat(data.gapBig()).isEqualTo(30);
-        assertThat(data.singleWidth()).isEqualTo(185);
+        assertThat(dayRegions).hasSize(10);
+        DayRegion first = dayRegions.getFirst();
+        assertThat(first.date().x()).isEqualTo(128);
+        assertThat(first.date().y()).isEqualTo(46);
+        assertThat(first.date().width()).isEqualTo(185);
+        assertThat(first.date().height()).isEqualTo(47);
     }
 
 }

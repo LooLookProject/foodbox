@@ -1,4 +1,4 @@
-package shanepark.foodbox.image.service;
+package shanepark.foodbox.image.ocr;
 
 import shanepark.foodbox.image.domain.ParsedMenu;
 

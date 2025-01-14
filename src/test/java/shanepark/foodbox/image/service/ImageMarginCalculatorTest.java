@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import shanepark.foodbox.image.domain.DayRegion;
+import shanepark.foodbox.image.ocr.ImageMarginCalculator;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

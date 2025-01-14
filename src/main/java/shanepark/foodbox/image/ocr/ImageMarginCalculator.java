@@ -1,4 +1,4 @@
-package shanepark.foodbox.image.service;
+package shanepark.foodbox.image.ocr;
 
 import org.springframework.stereotype.Component;
 import shanepark.foodbox.image.domain.DayRegion;
@@ -163,7 +163,7 @@ public class ImageMarginCalculator {
         return !isBackgroundColor(rgb);
     }
 
-    record Point(
+    private record Point(
             int x, int y
     ) {
     }

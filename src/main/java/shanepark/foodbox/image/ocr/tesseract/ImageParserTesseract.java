@@ -1,4 +1,4 @@
-package shanepark.foodbox.image.service;
+package shanepark.foodbox.image.ocr.tesseract;
 
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -12,12 +12,13 @@ import shanepark.foodbox.api.exception.ImageParseException;
 import shanepark.foodbox.image.domain.DayRegion;
 import shanepark.foodbox.image.domain.ParseRegion;
 import shanepark.foodbox.image.domain.ParsedMenu;
+import shanepark.foodbox.image.ocr.ImageMarginCalculator;
+import shanepark.foodbox.image.ocr.ImageParser;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,6 @@ public class ImageParserTesseract implements ImageParser {
 
     private final Tesseract tesseract;
     private final ImageMarginCalculator imageMarginCalculator;
-    final int DAY_PER_ROW = 5;
 
     public ImageParserTesseract(ImageMarginCalculator imageMarginCalculator) {
         this.imageMarginCalculator = imageMarginCalculator;

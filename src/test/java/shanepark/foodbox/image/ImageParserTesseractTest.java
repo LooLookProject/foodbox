@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import shanepark.foodbox.image.domain.ParsedMenu;
-import shanepark.foodbox.image.service.ImageMarginCalculator;
-import shanepark.foodbox.image.service.ImageParserTesseract;
+import shanepark.foodbox.image.ocr.ImageMarginCalculator;
+import shanepark.foodbox.image.ocr.tesseract.ImageParserTesseract;
 
 import java.io.IOException;
 import java.util.List;

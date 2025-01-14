@@ -10,8 +10,8 @@ import shanepark.foodbox.api.repository.MenuRepository;
 import shanepark.foodbox.crawl.CrawlConfig;
 import shanepark.foodbox.crawl.MenuCrawler;
 import shanepark.foodbox.image.domain.ParsedMenu;
-import shanepark.foodbox.image.service.ImageParserClova;
-import shanepark.foodbox.image.service.ImageParserTesseract;
+import shanepark.foodbox.image.ocr.clova.ImageParserClova;
+import shanepark.foodbox.image.ocr.tesseract.ImageParserTesseract;
 
 import java.io.File;
 import java.io.IOException;

@@ -38,6 +38,8 @@ after git clone, make `.env` file in the same directory as `docker-compose.yml` 
 ```properties
 SLACK_TOKEN=your_slack_token
 SLACK_CHANNEL=#your_slack_channel
+CLOVA_URL=your_clova_url_here(general)
+CLOVA_SECRET_KEY=your_clova_secret_here
 ```
 
 ### Run

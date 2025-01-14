@@ -42,7 +42,6 @@ public class ImageParserClova implements ImageParser {
         JsonObject image = images.get(0).getAsJsonObject();
         JsonArray fields = image.getAsJsonArray("fields");
 
-        // iterate
         Map<DayRegion, String> dateMap = new HashMap<>();
         Map<DayRegion, List<InferTextField>> menuMap = new HashMap<>();
         for (DayRegion dayRegion : dayRegions) {
@@ -62,9 +61,12 @@ public class ImageParserClova implements ImageParser {
             for (DayRegion dayRegion : dayRegions) {
                 if (dayRegion.date().contains(x, y)) {
                     dateMap.put(dayRegion, inferText);
-                } else if (dayRegion.menu().contains(x, y)) {
+                    break;
+                }
+                if (dayRegion.menu().contains(x, y)) {
                     InferTextField inferTextField = new InferTextField(y, x, inferText);
                     menuMap.get(dayRegion).add(inferTextField);
+                    break;
                 }
             }
         }

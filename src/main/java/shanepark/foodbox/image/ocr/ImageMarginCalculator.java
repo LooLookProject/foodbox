@@ -1,14 +1,61 @@
-package shanepark.foodbox.image.service;
+package shanepark.foodbox.image.ocr;
 
 import org.springframework.stereotype.Component;
+import shanepark.foodbox.image.domain.DayRegion;
 import shanepark.foodbox.image.domain.ImageMarginData;
+import shanepark.foodbox.image.domain.ParseRegion;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ImageMarginCalculator {
+    final int DAY_PER_ROW = 5;
 
-    public ImageMarginData calcMargin(BufferedImage image) {
+    public List<DayRegion> calcParseRegions(BufferedImage image) {
+        ImageMarginData marginData = calcMargin(image);
+
+        List<ParseRegion> dateRegions = new ArrayList<>();
+        List<ParseRegion> menuRegions = new ArrayList<>();
+
+        // first 5 days
+        int x = marginData.marginLeft();
+        int y = marginData.marginTop();
+        ParseRegion dateRegion = new ParseRegion(x, y, marginData.singleWidth(), marginData.headerHeight());
+        for (int i = 0; i < DAY_PER_ROW; i++) {
+            dateRegions.add(dateRegion);
+            dateRegion = dateRegion.addX(marginData.singleWidth() + marginData.gapSmall());
+        }
+        ParseRegion menuRegion = new ParseRegion(x, y + marginData.headerHeight() + marginData.gapSmall(), marginData.singleWidth(), marginData.singleHeight());
+        for (int i = 0; i < DAY_PER_ROW; i++) {
+            menuRegions.add(menuRegion);
+            menuRegion = menuRegion.addX(marginData.singleWidth() + marginData.gapSmall());
+        }
+
+        // Last 5 days
+        y += marginData.headerHeight() + marginData.gapSmall() + marginData.singleHeight() + marginData.gapBig();
+        dateRegion = new ParseRegion(x, y, marginData.singleWidth(), marginData.headerHeight());
+        for (int i = 0; i < DAY_PER_ROW; i++) {
+            dateRegions.add(dateRegion);
+            dateRegion = dateRegion.addX(marginData.singleWidth() + marginData.gapSmall());
+        }
+        y += marginData.headerHeight() + marginData.gapSmall();
+        menuRegion = new ParseRegion(x, y, marginData.singleWidth(), marginData.singleHeight());
+        for (int i = 0; i < DAY_PER_ROW; i++) {
+            menuRegions.add(menuRegion);
+            menuRegion = menuRegion.addX(marginData.singleWidth() + marginData.gapSmall());
+        }
+
+        List<DayRegion> list = new ArrayList<>();
+        int totalDays = dateRegions.size();
+        for (int i = 0; i < totalDays; i++) {
+            list.add(new DayRegion(dateRegions.get(i), menuRegions.get(i)));
+        }
+        return list;
+    }
+
+    private ImageMarginData calcMargin(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -116,7 +163,7 @@ public class ImageMarginCalculator {
         return !isBackgroundColor(rgb);
     }
 
-    record Point(
+    private record Point(
             int x, int y
     ) {
     }

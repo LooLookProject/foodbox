@@ -1,22 +1,13 @@
 package shanepark.foodbox.image.domain;
 
-import lombok.Getter;
+public record ParseRegion(int x, int y, int width, int height) {
 
-@Getter
-public class ParseRegion {
-    private int x;
-    private int y;
-    private int width;
-    private int height;
-
-    public ParseRegion(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    public ParseRegion addX(int i) {
+        return new ParseRegion(this.x + i, y, width, height);
     }
 
-    public void addX(int i) {
-        x += i;
+    public boolean contains(int x, int y) {
+        return this.x <= x && x <= this.x + width && this.y <= y && y <= this.y + height;
     }
+
 }

@@ -3,7 +3,9 @@ package shanepark.foodbox.api.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import shanepark.foodbox.api.domain.MenuResponse;
 import shanepark.foodbox.api.exception.MenuNotUploadedException;
 import shanepark.foodbox.api.repository.MenuRepository;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,7 @@ public class MenuService {
     private final ImageParserTesseract imageParserTesseract;
     private final ImageParserClova imageParserClova;
     private final CrawlConfig crawlConfig;
+    private String lastImageHash;
 
     @PostConstruct
     public void init() {
@@ -53,15 +57,26 @@ public class MenuService {
         return menuRepository.findAll();
     }
 
-    public void crawl() {
+    public synchronized void crawl() {
         long start = System.currentTimeMillis();
         log.info("Start crawling menu");
         File image = menuCrawler.getImage(crawlConfig);
 
+        try {
+            String imageHash = DigestUtils.md5DigestAsHex(FileUtils.readFileToByteArray(image));
+            if (Objects.equals(imageHash, lastImageHash)) {
+                log.info("The Image has already parsed before. Skip this crawling (upcoming menu may not be uploaded yet)");
+                return;
+            }
+            lastImageHash = imageHash;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         List<ParsedMenu> parsed = new ArrayList<>();
         try {
             parsed = imageParserClova.parse(image);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed to parse image with Clova", e);
             try {
                 parsed = imageParserTesseract.parse(image);

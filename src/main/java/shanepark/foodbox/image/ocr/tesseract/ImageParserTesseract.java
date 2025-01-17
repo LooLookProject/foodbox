@@ -17,8 +17,8 @@ import shanepark.foodbox.image.ocr.ImageParser;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,9 +52,9 @@ public class ImageParserTesseract implements ImageParser {
     }
 
     @Override
-    public List<ParsedMenu> parse(File file) {
+    public List<ParsedMenu> parse(Path path) {
         try {
-            BufferedImage bufferedImage = ImageIO.read(file);
+            BufferedImage bufferedImage = ImageIO.read(path.toFile());
             List<DayRegion> regions = imageMarginCalculator.calcParseRegions(bufferedImage);
 
             List<ParsedMenu> days = new ArrayList<>();

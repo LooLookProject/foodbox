@@ -12,11 +12,10 @@ import shanepark.foodbox.image.ocr.ImageParser;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
-
-import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
 @RequiredArgsConstructor
 @Component
@@ -27,11 +26,11 @@ public class ImageParserClova implements ImageParser {
     private final Gson gson = new Gson();
 
     @Override
-    public List<ParsedMenu> parse(File file) throws IOException {
-        String base64 = encoder.encodeToString(readFileToByteArray(file));
+    public List<ParsedMenu> parse(Path path) throws IOException {
+        String base64 = encoder.encodeToString(Files.readAllBytes(path));
         String response = naverClovaApi.clovaRequest(base64);
 
-        BufferedImage bufferedImage = ImageIO.read(file);
+        BufferedImage bufferedImage = ImageIO.read(path.toFile());
         List<DayRegion> dayRegions = imageMarginCalculator.calcParseRegions(bufferedImage);
         return parseResponse(response, dayRegions);
     }

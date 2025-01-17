@@ -8,4 +8,7 @@ public record MenuResponse(
         List<String> menus
 ) {
 
+    public boolean isValid() {
+        return menus.size() > 2;
+    }
 }

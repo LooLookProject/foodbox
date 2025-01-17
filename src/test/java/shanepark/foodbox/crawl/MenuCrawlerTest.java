@@ -2,26 +2,25 @@ package shanepark.foodbox.crawl;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static shanepark.foodbox.integration.TestConstant.*;
 
 class MenuCrawlerTest {
 
     private final MenuCrawler menuCrawler = new MenuCrawler();
 
     @Test
-    void getImage() {
-        // Given
-        String url = "https://foodboxofficial.modoo.at/?link=e3pla1lv";
-        String cssSelector = ".gallery_img img";
-
+    void getImage() throws IOException {
         // When
-        File file = menuCrawler.getImage(new CrawlConfig(url, cssSelector, 1));
+        Path path = menuCrawler.getImage(new CrawlConfig(CRAWL_URL, CRAWL_CSS_SELECTOR, CRAWL_IMAGE_INDEX));
 
         // Then
-        assertThat(file).isNotNull();
-        assertThat(file.length()).isGreaterThan(0);
+        assertThat(path).isNotNull();
+        assertThat(Files.size(path)).isGreaterThan(0);
     }
 
 }

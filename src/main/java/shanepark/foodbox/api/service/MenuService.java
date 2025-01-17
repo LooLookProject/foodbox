@@ -3,7 +3,6 @@ package shanepark.foodbox.api.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import shanepark.foodbox.api.domain.MenuResponse;
@@ -15,8 +14,9 @@ import shanepark.foodbox.image.domain.ParsedMenu;
 import shanepark.foodbox.image.ocr.clova.ImageParserClova;
 import shanepark.foodbox.image.ocr.tesseract.ImageParserTesseract;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +60,10 @@ public class MenuService {
     public synchronized void crawl() {
         long start = System.currentTimeMillis();
         log.info("Start crawling menu");
-        File image = menuCrawler.getImage(crawlConfig);
+        Path image = menuCrawler.getImage(crawlConfig);
 
         try {
-            String imageHash = DigestUtils.md5DigestAsHex(FileUtils.readFileToByteArray(image));
+            String imageHash = DigestUtils.md5DigestAsHex(Files.readAllBytes(image));
             if (Objects.equals(imageHash, lastImageHash)) {
                 log.info("The Image has already parsed before. Skip this crawling (upcoming menu may not be uploaded yet)");
                 return;

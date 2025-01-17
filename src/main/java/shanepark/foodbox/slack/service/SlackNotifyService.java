@@ -31,6 +31,11 @@ public class SlackNotifyService {
         }
 
         MenuResponse todayMenu = menuService.getTodayMenu();
+        if (!todayMenu.isValid()) {
+            log.info("Invalid menu. Skip notifying today's menu: {}", todayMenu);
+            return;
+        }
+
         String message = createSlackMessage(todayMenu);
         SlackPayload payload = new SlackPayload(slackConfig.getSlackChannel(), slackConfig.getUserName(), message, ":bento:");
 

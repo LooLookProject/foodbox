@@ -9,6 +9,7 @@ import shanepark.foodbox.image.domain.ParsedMenu;
 import shanepark.foodbox.image.ocr.ImageMarginCalculator;
 import shanepark.foodbox.image.ocr.clova.ImageParserClova;
 import shanepark.foodbox.image.ocr.clova.NaverClovaApi;
+import shanepark.foodbox.image.ocr.clova.NaverClovaConfig;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,7 +36,7 @@ class ImageParserClovaTest {
 
         // When
         when(naverClovaApi.clovaRequest(anyString())).thenReturn(clovaResponse);
-        List<ParsedMenu> parse = imageParserClova.parse(nov11.getFile());
+        List<ParsedMenu> parse = imageParserClova.parse(nov11.getFile().toPath());
 
         // Then
         assertThat(parse).hasSize(10);

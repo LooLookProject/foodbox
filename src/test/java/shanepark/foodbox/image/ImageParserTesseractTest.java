@@ -23,7 +23,7 @@ class ImageParserTesseractTest {
     @DisplayName("Parse image and return parsed menu")
     void parse() throws IOException {
         ClassPathResource resource = new ClassPathResource("menu/menu-11112024.png");
-        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile());
+        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile().toPath());
         logger.info("parsedMenu: \n{}", parsedMenu);
 
         assertThat(parsedMenu).hasSize(10);
@@ -34,7 +34,7 @@ class ImageParserTesseractTest {
     @DisplayName("OCT 28 image parse test")
     void parse2() throws IOException {
         ClassPathResource resource = new ClassPathResource("menu/menu-10282024.png");
-        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile());
+        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile().toPath());
         logger.info("parsedMenu: \n{}", parsedMenu);
 
         assertThat(parsedMenu).hasSize(10);
@@ -45,7 +45,7 @@ class ImageParserTesseractTest {
     @DisplayName("DEC 09 image parse test")
     void parse3() throws IOException {
         ClassPathResource resource = new ClassPathResource("menu/menu-12092024-yuseong.png");
-        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile());
+        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile().toPath());
         logger.info("parsedMenu: \n{}", parsedMenu);
 
         assertThat(parsedMenu).hasSize(10);
@@ -56,7 +56,18 @@ class ImageParserTesseractTest {
     @DisplayName("DEC 09 official website image parse test")
     void parse4() throws IOException {
         ClassPathResource resource = new ClassPathResource("menu/menu-12092024-official.png");
-        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile());
+        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile().toPath());
+        logger.info("parsedMenu: \n{}", parsedMenu);
+
+        assertThat(parsedMenu).hasSize(10);
+        assertThat(parsedMenu.getFirst().getDate()).matches("\\d{1,2}/\\d{1,2}\\([일월화수목금토]\\)");
+    }
+
+    @Test
+    @DisplayName("JAN 20 2025 image parse test")
+    void parse5() throws IOException {
+        ClassPathResource resource = new ClassPathResource("menu/menu-01202025.png");
+        List<ParsedMenu> parsedMenu = parser.parse(resource.getFile().toPath());
         logger.info("parsedMenu: \n{}", parsedMenu);
 
         assertThat(parsedMenu).hasSize(10);

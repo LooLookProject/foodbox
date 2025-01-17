@@ -53,7 +53,6 @@ public class MenuService {
     }
 
     public List<MenuResponse> findAll() {
-        getTodayMenu(); // Ensure today's menu is up-to-date
         return menuRepository.findAll();
     }
 

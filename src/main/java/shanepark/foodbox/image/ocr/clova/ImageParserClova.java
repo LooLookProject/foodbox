@@ -52,18 +52,25 @@ public class ImageParserClova implements ImageParser {
             JsonArray vertices = field
                     .getAsJsonObject("boundingPoly")
                     .getAsJsonArray("vertices");
-            int x = vertices.get(0).getAsJsonObject().get("x").getAsInt();
-            int y = vertices.get(0).getAsJsonObject().get("y").getAsInt();
+
+            int middleOfX = 0;
+            int middleOfY = 0;
+            for (int j = 0; j < 4; j++) {
+                middleOfX += vertices.get(j).getAsJsonObject().get("x").getAsInt();
+                middleOfY += vertices.get(j).getAsJsonObject().get("y").getAsInt();
+            }
+            middleOfX /= 4;
+            middleOfY /= 4;
 
             String inferText = field.get("inferText").getAsString();
 
             for (DayRegion dayRegion : dayRegions) {
-                if (dayRegion.date().contains(x, y)) {
+                if (dayRegion.date().contains(middleOfX, middleOfY)) {
                     dateMap.put(dayRegion, inferText);
                     break;
                 }
-                if (dayRegion.menu().contains(x, y)) {
-                    InferTextField inferTextField = new InferTextField(y, x, inferText);
+                if (dayRegion.menu().contains(middleOfX, middleOfY)) {
+                    InferTextField inferTextField = new InferTextField(middleOfY, middleOfX, inferText);
                     menuMap.get(dayRegion).add(inferTextField);
                     break;
                 }

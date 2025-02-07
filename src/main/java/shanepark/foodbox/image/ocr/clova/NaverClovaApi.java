@@ -3,12 +3,14 @@ package shanepark.foodbox.image.ocr.clova;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.time.Instant;
 
 import static org.springframework.http.HttpMethod.POST;
@@ -18,7 +20,10 @@ import static org.springframework.http.HttpMethod.POST;
 public class NaverClovaApi {
 
     private final NaverClovaConfig naverClovaConfig;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplateBuilder()
+            .setConnectTimeout(Duration.ofSeconds(5))
+            .setReadTimeout(Duration.ofSeconds(10))
+            .build();
 
     public String clovaRequest(String base64Image) {
         String requestBody = createRequestBody(base64Image);
